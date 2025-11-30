@@ -1,5 +1,6 @@
 import { NODE_ENV } from "../config/env.js";
 import { authService } from "../services/auth.service.js";
+import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}$/;
@@ -10,15 +11,15 @@ class AuthController {
         try {
             // Basic validation
             if (!fullName || !email || !password) {
-                return res.status(400).json(new ApiResponse(400, "Full name, email, and password are required"));
+                throw new ApiError(400, "Full name, email, and password are required");
             }
 
             if(password.length < 6) {
-                return res.status(400).json(new ApiResponse(400, "Password must be at least 6 characters long"));
+                throw new ApiError(400, "Password must be at least 6 characters long");
             }
 
             if (!emailRegex.test(email)) {
-                return res.status(400).json(new ApiResponse(400, "Invalid email format"));
+                throw new ApiError(400, "Invalid email format");
             }
 
             const { user: createdUser, accessToken } = await authService.signup({ fullName, email, password });
@@ -38,11 +39,33 @@ class AuthController {
         }
     }
 
-    async login(req, res) { 
+    async login(req, res, next) { 
+        const { email, password } = req.body;
+        try { 
+            // Basic validation
+            if (!email || !password) {
+                throw new ApiError(400, "Email and password are required");
+            }
 
+            if (!emailRegex.test(email)) {
+				throw new ApiError(400, "Invalid email format");
+            }
+            
+            const { user, accessToken } = await authService.login(email, password);
+
+            res.cookie("accessToken", accessToken, {
+                httpOnly: true, // Mitigates XSS attacks
+                secure: NODE_ENV === "production",
+                sameSite: "strict", // Mitigates CSRF attacks
+                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            });
+            res.status(200).json(new ApiResponse(200, "User logged in successfully", { user }));
+        } catch (error) {
+            next(error);
+        }
     }
 
-    async logout(req, res) {
+    async logout(req, res, next) {
     
     }
 }

@@ -28,6 +28,16 @@ class AuthService{
 
         return { user: createdUser, accessToken };
     }
+
+    async login(email, password){
+        const user = await User.findOne({ email });
+        if (!user || !(await user.isPasswordCorrect(password))) {
+            throw new ApiError(401, "Invalid email or password");
+        }
+        const accessToken = user.generateAccessToken();
+        const userWithoutPassword = await User.findById(user._id).select("-password");
+        return { user: userWithoutPassword, accessToken };
+    }
 }
 
 export const authService = new AuthService();
