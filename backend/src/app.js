@@ -18,11 +18,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-if (NODE_ENV === "development") {
-	app.get("/api", (req, res) => {
-		res.status(200).json("Welcome to FlowChat API");
-	});
-}
+// Health check route
+app.get("/api", (req, res) => {
+	res.status(200).json("Welcome to FlowChat API");
+});
 
 // API routes
 app.use("/api/auth", authRouter);
