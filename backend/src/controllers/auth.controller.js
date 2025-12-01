@@ -66,7 +66,20 @@ class AuthController {
     }
 
     async logout(req, res, next) {
-    
+        try {
+            const user = req.user;
+            if (!user) {
+                throw new ApiError(401, "Unauthorized");
+            }
+            res.clearCookie("accessToken", {
+                httpOnly: true,
+                secure: NODE_ENV === "production",
+                sameSite: "strict"
+            });
+            res.status(200).json(new ApiResponse(200, "User logged out successfully"));
+        } catch (error) {
+            next(error);
+        }
     }
 }
 
