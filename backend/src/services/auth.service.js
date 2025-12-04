@@ -89,7 +89,35 @@ class AuthService {
 		}
 
 		// TODO: send welcome notification or email here
-		// TODO: UPDATE THE USER INFO IN STREAM
+
+		// Upsert user in Stream
+		await upsertStreamUser({
+			id: updatedUser._id.toString(),
+			name: updatedUser.fullName.toString(),
+			image: updatedUser.avatarUrl.toString() || ""
+		});
+
+		return updatedUser;
+	}
+
+	async updateUser(userId, updateData) {
+		const updatedUser = await User.findByIdAndUpdate(
+			userId,
+			{
+				fullName: updateData.fullName,
+				bio: updateData.bio,
+				gender: updateData.gender,
+				nativeLanguage: updateData.nativeLanguage,
+				learningLanguages: updateData.learningLanguages,
+				location: updateData.location,
+			},
+			{ new: true }
+		).select("-password");
+		if (!updatedUser) {
+			throw new ApiError(500, "User update failed");
+		}
+
+		// Upsert user in Stream
 		await upsertStreamUser({
 			id: updatedUser._id.toString(),
 			name: updatedUser.fullName.toString(),

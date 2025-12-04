@@ -14,7 +14,7 @@ const loginSchema = z.object({
 });
 
 const onboardSchema = z.object({
-	fullName: z.string("Full name is required"),
+	fullName: z.string("Full name is required").min(1, "Full name cannot be empty"),
 	bio: z.string().max(200, "Bio must be at most 200 characters").optional(),
 	gender: z.enum(["male", "female", "other"], "Gender must be male, female, or other"),
 	nativeLanguage: z.string("Native language is required").min(1, "Native language cannot be empty"),
@@ -28,6 +28,24 @@ const onboardSchema = z.object({
 		)
 		.nonempty("At least one learning language is required"),
 	location: z.string("Location is required").min(1, "Location cannot be empty"),
+});
+
+const updateUserSchema = z.object({
+	fullName: z.string().min(1, "Full name cannot be empty").optional(),
+	bio: z.string().max(200, "Bio must be at most 200 characters").optional(),
+	gender: z.enum(["male", "female", "other"], "Gender must be male, female, or other").optional(),
+	nativeLanguage: z.string().min(1, "Native language cannot be empty").optional(),
+	learningLanguages: z
+		.array(
+			// transform first, then validate with refine (min is not available after transform)
+			z
+				.string()
+				.transform((s) => String(s ?? "").trim())
+				.refine((s) => s.length > 0, { message: "Language cannot be empty" })
+		)
+		.nonempty("At least one learning language is required")
+		.optional(),
+	location: z.string().min(1, "Location cannot be empty").optional(),
 });
 
 // middleware factory for Express
@@ -48,4 +66,4 @@ const validate = (schema) => (req, res, next) => {
 	next();
 };
 
-export { signupSchema, loginSchema, onboardSchema, validate };
+export { signupSchema, loginSchema, onboardSchema, updateUserSchema, validate };

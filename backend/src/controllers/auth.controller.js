@@ -83,6 +83,17 @@ class AuthController {
         }
     }
 
+    async updateUser(req, res, next) {
+        try {
+            const user = req.user;
+            const updateData = req.body;
+            const updatedUser = await authService.updateUser(user._id, updateData);
+            res.status(200).json(new ApiResponse(200, "User updated successfully", { user: updatedUser }));
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async getMe(req, res, next) {
         try {
             const user = req.user;
