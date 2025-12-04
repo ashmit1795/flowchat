@@ -1,4 +1,5 @@
 import User from "../../models/user.model.js";
+import { upsertStreamUser } from "../config/stream.js";
 import ApiError from "../utils/ApiError.js";
 
 const FEMALE_AVATARS = [
@@ -47,6 +48,12 @@ class AuthService {
 		}
 
 		const accessToken = createdUser.generateAccessToken();
+
+		await upsertStreamUser({
+			id: createdUser._id.toString(),
+			name: createdUser.fullName.toString(),
+			image: createdUser.avatarUrl.toString() || ""
+		});
 
 		return { user: createdUser, accessToken };
 	}
