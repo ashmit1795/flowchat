@@ -7,22 +7,9 @@ const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}$/;
 
 class AuthController {
     async signup(req, res, next) { 
-        const { fullName, email, password } = req.body;
+        const { fullName, email, password, gender } = req.body;
         try {
-            // Basic validation
-            if (!fullName || !email || !password) {
-                throw new ApiError(400, "Full name, email, and password are required");
-            }
-
-            if(password.length < 6) {
-                throw new ApiError(400, "Password must be at least 6 characters long");
-            }
-
-            if (!emailRegex.test(email)) {
-                throw new ApiError(400, "Invalid email format");
-            }
-
-            const { user: createdUser, accessToken } = await authService.signup({ fullName, email, password });
+            const { user: createdUser, accessToken } = await authService.signup({ fullName, email, password, gender });
 
             // TODO: Create an account in Stream also
             
