@@ -21,6 +21,17 @@ class UserController{
             next(error);
         }
     }
+
+    async sendFriendRequest(req, res, next) {
+        try {
+            const user = req.user;
+            const friendId = req.params.id;
+            await userService.sendFriendRequest(user._id, friendId);
+            res.status(200).json(new ApiResponse(200, "Friend request sent successfully"));
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 export const userController = new UserController();
