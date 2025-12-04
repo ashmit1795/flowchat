@@ -3,57 +3,57 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { JWT_EXPIRES_IN, JWT_SECRET } from "../src/config/env.js";
 
-const userSchema = new Schema({
-    fullName: {
-        type: String,
-        required: true
-    },
-    gender: {
-        type: String,
-        enum: ["male", "female", "other"],
-        required: true
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    password: {
-        type: String,
-        required: true,
-        minlength: 6
-    },
-    bio: {
-        type: String,
-        default: ""
-    },
-    avatarUrl: {
-        type: String,
-        default: ""
-    },
-    nativeLanguage: {
-        type: String,
-        default: ""
-    },
-    learningLanguages: {
-        type: String,
-        default: ""
-    },
-    location: {
-        type: String,
-        default: ""
-    },
-    isOnboarded: {
-        type: Boolean,
-        default: false
-    },
-    friends: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: "User"
-        }
-    ]
-}, { timestamps: true });
+const userSchema = new Schema(
+	{
+		fullName: {
+			type: String,
+			required: true,
+		},
+		gender: {
+			type: String,
+			enum: ["male", "female", "other"],
+			required: true,
+		},
+		email: {
+			type: String,
+			required: true,
+			unique: true,
+		},
+		password: {
+			type: String,
+			required: true,
+			minlength: 6,
+		},
+		bio: {
+			type: String,
+			default: "",
+		},
+		avatarUrl: {
+			type: String,
+			default: "",
+		},
+		nativeLanguage: {
+			type: String,
+			default: "",
+		},
+		learningLanguages: [String],
+		location: {
+			type: String,
+			default: "",
+		},
+		isOnboarded: {
+			type: Boolean,
+			default: false,
+		},
+		friends: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: "User",
+			},
+		],
+	},
+	{ timestamps: true }
+);
 
 userSchema.pre("save", async function () {
     if (this.isModified("password")) {
