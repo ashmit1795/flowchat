@@ -60,6 +60,32 @@ class AuthService {
 		const userWithoutPassword = await User.findById(user._id).select("-password");
 		return { user: userWithoutPassword, accessToken };
 	}
+
+	async onboard(userId, onboardData) { 
+		// Check if user has already onboarded
+		const user = await User.findById(userId);
+		if (user.isOnboarded) {
+			throw new ApiError(400, "User has already completed onboarding");
+		}
+		const updatedUser = await User.findByIdAndUpdate(userId, {
+			fullName: onboardData.fullName,
+			bio: onboardData.bio || "",
+			gender: onboardData.gender,
+			nativeLanguage: onboardData.nativeLanguage || "",
+			learningLanguages: onboardData.learningLanguages || [],
+			location: onboardData.location || "",
+			isOnboarded: true
+		}, { new: true });
+
+		if(!updatedUser) {
+			throw new ApiError(500, "Onboarding failed");
+		}
+
+		// TODO: send welcome notification or email here
+		// TODO: UPDATE THE USER INFO IN STREAM
+
+		return updatedUser;
+	}
 }
 
 export const authService = new AuthService();
