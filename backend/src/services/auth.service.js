@@ -90,6 +90,11 @@ class AuthService {
 
 		// TODO: send welcome notification or email here
 		// TODO: UPDATE THE USER INFO IN STREAM
+		await upsertStreamUser({
+			id: updatedUser._id.toString(),
+			name: updatedUser.fullName.toString(),
+			image: updatedUser.avatarUrl.toString() || ""
+		});
 
 		return updatedUser;
 	}
