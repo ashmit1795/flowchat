@@ -82,6 +82,18 @@ class AuthController {
             next(error);
         }
     }
+
+    async getMe(req, res, next) {
+        try {
+            const user = req.user;
+            if (!user) {
+                throw new ApiError(401, "Unauthorized");
+            }
+            res.status(200).json(new ApiResponse(200, "User fetched successfully", { user }));
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 export const authController = new AuthController();

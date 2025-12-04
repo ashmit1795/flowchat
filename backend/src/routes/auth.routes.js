@@ -9,5 +9,6 @@ authRouter.post("/signup",validate(signupSchema), authController.signup);
 authRouter.post("/login", validate(loginSchema), authController.login);
 authRouter.post("/logout", protectRoute, authController.logout);
 authRouter.post("/onboard", protectRoute, validate(onboardSchema), authController.onboard);
+authRouter.get("/me", protectRoute, authController.getMe);
 
 export { authRouter };
