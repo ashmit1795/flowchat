@@ -26,8 +26,19 @@ class UserController{
         try {
             const user = req.user;
             const friendId = req.params.id;
-            await userService.sendFriendRequest(user._id, friendId);
-            res.status(200).json(new ApiResponse(200, "Friend request sent successfully"));
+            const friendRequest = await userService.sendFriendRequest(user._id, friendId);
+            res.status(200).json(new ApiResponse(200, "Friend request sent successfully", { friendRequest }));
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async acceptFriendRequest(req, res, next) {
+        try {
+            const user = req.user;
+            const { requestId } = req.params;
+            const updatedFriendRequest = await userService.acceptFriendRequest(user._id, requestId);
+            res.status(200).json(new ApiResponse(200, "Friend request accepted successfully", { friendRequest: updatedFriendRequest }));
         } catch (error) {
             next(error);
         }

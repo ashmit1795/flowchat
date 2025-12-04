@@ -52,7 +52,6 @@ class UserService{
         }
 
         // Check if they are already friends
-        console.log("Receiver's Friends:", receiver.friends, "Sender ID:", senderId);
         if(receiver.friends.includes(senderId)) {
             throw new ApiError(400, "You are already friends with this user");
         }
@@ -75,7 +74,48 @@ class UserService{
             receiver: receiverId
         });
 
+        const createdRequest = await FriendRequest.findById(friendRequest._id)
+            .populate("sender", "fullName ")
+            .populate("receiver", "fullName ");
+
         // Return the created friend request
+        return createdRequest;
+    }
+
+    async acceptFriendRequest(userId, requestId) {
+        // Validate friend request existence and ownership
+        const friendRequest = await FriendRequest.findById(requestId);
+        if(!friendRequest) {
+            throw new ApiError(404, "Friend request not found");
+        }
+
+        if(friendRequest.status !== "pending") {
+            throw new ApiError(400, `Cannot accept a friend request with status: ${friendRequest.status}`);
+        }
+
+        // Ensure the user is the receiver of the friend request
+        if(friendRequest.receiver.toString() !== userId.toString()) {
+            throw new ApiError(403, "You are not authorized to accept this friend request");
+        }
+
+        // Update friend request status to accepted
+        friendRequest.status = "accepted";
+        await friendRequest.save();
+
+        // Add each user to the other's friends list
+        const sender = await User.findById(friendRequest.sender);
+        const receiver = await User.findById(friendRequest.receiver);
+
+        if (!sender || !receiver) {
+            throw new ApiError(404, "Sender not found");
+        }
+
+        sender.friends.push(receiver._id);
+        receiver.friends.push(sender._id);
+
+        await sender.save();
+        await receiver.save();
+
         return friendRequest;
     }
 }
