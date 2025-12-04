@@ -28,6 +28,17 @@ class UserService{
         });
         return recommendedUsers;
     }
+
+    async getMyFriends(userId) {
+        const user = await User.findById(userId).populate("friends", "-password -email");
+        console.log(user)
+        if (!user) {
+            throw new ApiError("User not found");
+        }
+        return user.friends;
+    }
 }
 
 export const userService = new UserService();
+
+// TODO: Show Mutual Friends

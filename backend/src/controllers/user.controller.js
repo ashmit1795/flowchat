@@ -11,6 +11,16 @@ class UserController{
             next(error);
         }
     }
+
+    async getMyFriends(req, res, next) {
+        try {
+            const user = req.user;
+            const friends = await userService.getMyFriends(user._id);
+            res.status(200).json(new ApiResponse(200, "Friends fetched successfully", { friends }));
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 export const userController = new UserController();

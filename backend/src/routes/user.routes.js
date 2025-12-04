@@ -7,5 +7,6 @@ const userRouter = Router();
 userRouter.use(protectRoute);
 
 userRouter.get("/", userController.getRecommendedUsers);
+userRouter.get("/friends", userController.getMyFriends);
 
 export default userRouter;
