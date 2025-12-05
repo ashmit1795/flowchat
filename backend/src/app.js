@@ -5,9 +5,10 @@ import errorHandler from "./middlewares/errorHandler.middleware.js";
 import cookieParser from "cookie-parser";
 import path from "path";
 import fs from "fs";
-import { NODE_ENV } from "./config/env.js";
+import { CLIENT_URL, NODE_ENV } from "./config/env.js";
 import { fileURLToPath } from "url";
 import userRouter from "./routes/user.routes.js";
+import cors from "cors";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,6 +16,10 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 // Middlewares
+app.use(cors({
+	origin: CLIENT_URL,
+	credentials: true,
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
