@@ -1,9 +1,27 @@
-import React from 'react'
+import React from "react";
+import { Route, Routes } from "react-router";
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
+import Onboarding from "./pages/Onboarding";
+import Notifications from "./pages/Notifications";
+import Home from "./pages/Home";
+import Call from "./pages/Call";
+import Chat from "./pages/Chat";
 
 const App = () => {
-  return (
-    <div>App</div>
-  )
-}
+	return (
+		<div className="h-screen" data-theme="night">
+			<Routes>
+				<Route path="/" element={<Home />} />
+				<Route path="/login" element={<Login />} />
+				<Route path="/signup" element={<SignUp />} />
+				<Route path="/onboarding" element={<Onboarding />} />
+				<Route path="/notifications" element={<Notifications />} />
+				<Route path="/call" element={<Call />} />
+				<Route path="/chat" element={<Chat />} />
+			</Routes>
+		</div>
+	);
+};
 
-export default App
+export default App;
