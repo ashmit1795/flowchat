@@ -119,13 +119,25 @@ class UserService{
     }
 
     async getMyFriendRequests(userId) {
-        const friendRequests = await FriendRequest.find({
+        const pendingFriendRequests = await FriendRequest.find({
             receiver: userId,
             status: "pending"
         })
-            .populate("sender", "fullName avatarUrl nativeLanguage learningLanguages")
+            .populate("sender", "fullName avatarUrl nativeLanguage learningLanguages");
         
-        return friendRequests;
+        const acceptedFriendRequest = await FriendRequest.find({
+            sender: userId,
+            status: "accepted"
+        })
+            .populate("receiver", "fullName avatarUrl");
+        
+        const sentFriendRequests = await FriendRequest.find({
+            sender: userId,
+            status: "pending"
+        })
+            .populate("receiver", "fullName avatarUrl nativeLanguage learningLanguages");
+        
+        return { received: pendingFriendRequests, accepted: acceptedFriendRequest, sent: sentFriendRequests };
     }
 }
 
