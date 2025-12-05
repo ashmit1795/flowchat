@@ -10,6 +10,7 @@ userRouter.get("/", userController.getRecommendedUsers);
 userRouter.get("/friends", userController.getMyFriends);
 userRouter.post("/friend-request/:id", userController.sendFriendRequest);
 userRouter.put("/friend-request/:requestId/accept", userController.acceptFriendRequest);
+userRouter.get("/friend-requests", userController.getMyFriendRequests);
 
 
 export default userRouter;

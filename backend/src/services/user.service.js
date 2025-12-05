@@ -31,8 +31,7 @@ class UserService{
     }
 
     async getMyFriends(userId) {
-        const user = await User.findById(userId).populate("friends", "-password -email");
-        console.log(user)
+        const user = await User.findById(userId).populate("friends", "-friends -isOnboarded -password -email");
         if (!user) {
             throw new ApiError("User not found");
         }
@@ -41,7 +40,7 @@ class UserService{
 
     async sendFriendRequest(senderId, receiverId) {
         // Prevent sending friend request to oneself
-        if (senderId === receiverId) {
+        if (senderId.toString() === receiverId.toString()) {
             throw new ApiError(400, "You cannot send a friend request to yourself");
         }
 
@@ -117,6 +116,16 @@ class UserService{
         await receiver.save();
 
         return friendRequest;
+    }
+
+    async getMyFriendRequests(userId) {
+        const friendRequests = await FriendRequest.find({
+            receiver: userId,
+            status: "pending"
+        })
+            .populate("sender", "fullName avatarUrl nativeLanguage learningLanguages")
+        
+        return friendRequests;
     }
 }
 

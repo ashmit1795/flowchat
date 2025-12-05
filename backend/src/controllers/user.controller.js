@@ -43,6 +43,16 @@ class UserController{
             next(error);
         }
     }
+
+    async getMyFriendRequests(req, res, next) {
+        try {
+            const user = req.user;
+            const friendRequests = await userService.getMyFriendRequests(user._id);
+            res.status(200).json(new ApiResponse(200, "Friend requests fetched successfully", { friendRequests }));
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 export const userController = new UserController();
