@@ -1,14 +1,14 @@
 import { useState } from "react";
 import useAuthUser from "../hooks/useAuthUser";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { completeOnboarding } from "../lib/api";
 import toast from "react-hot-toast";
 import { FEMALE_AVATARS, LANGUAGES, MALE_AVATARS } from "../constants";
 import { CameraIcon, ShuffleIcon, MapPinIcon, FlowerIcon, LoaderIcon } from "lucide-react";
+import useOnboarding from "../hooks/useOnboarding";
 
 const Onboarding = () => {
 	const { authenticatedUser } = useAuthUser();
-	const queryClient = useQueryClient();
+
+	const { onboardingMutation, isPending } = useOnboarding();
 
 	const [formState, setFormState] = useState({
 		fullName: authenticatedUser?.fullName || "",
@@ -20,16 +20,7 @@ const Onboarding = () => {
 		gender: authenticatedUser?.gender || "other",
 	});
 
-	const { mutate: onboardingMutation, isPending } = useMutation({
-		mutationFn: () => completeOnboarding,
-		onSuccess: () => {
-			toast.success("Onboarding completed successfully!");
-			queryClient.invalidateQueries({ queryKey: ["authUser"] });
-		},
-		onError: (error) => {
-			toast.error(error.response?.data?.message || "Onboarding failed. Please try again.");
-		}
-	});
+
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
