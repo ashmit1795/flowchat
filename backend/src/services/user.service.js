@@ -123,7 +123,7 @@ class UserService{
             receiver: userId,
             status: "pending"
         })
-            .populate("sender", "fullName avatarUrl nativeLanguage learningLanguages");
+            .populate("sender", "fullName avatarUrl nativeLanguage learningLanguage");
         
         const acceptedFriendRequest = await FriendRequest.find({
             sender: userId,
@@ -135,7 +135,7 @@ class UserService{
             sender: userId,
             status: "pending"
         })
-            .populate("receiver", "fullName avatarUrl nativeLanguage learningLanguages");
+            .populate("receiver", "fullName avatarUrl nativeLanguage learningLanguage");
         
         return { received: pendingFriendRequests, accepted: acceptedFriendRequest, sent: sentFriendRequests };
     }

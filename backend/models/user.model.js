@@ -36,7 +36,10 @@ const userSchema = new Schema(
 			type: String,
 			default: "",
 		},
-		learningLanguages: [String],
+		learningLanguage: {
+			type: String,
+			default: "",
+		},
 		location: {
 			type: String,
 			default: "",

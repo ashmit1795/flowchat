@@ -79,7 +79,7 @@ class AuthService {
 			bio: onboardData.bio || "",
 			gender: onboardData.gender,
 			nativeLanguage: onboardData.nativeLanguage || "",
-			learningLanguages: onboardData.learningLanguages || [],
+			learningLanguage: onboardData.learningLanguage || "",
 			location: onboardData.location || "",
 			isOnboarded: true
 		}, { new: true });
@@ -108,7 +108,7 @@ class AuthService {
 				bio: updateData.bio,
 				gender: updateData.gender,
 				nativeLanguage: updateData.nativeLanguage,
-				learningLanguages: updateData.learningLanguages,
+				learningLanguage: updateData.learningLanguage,
 				location: updateData.location,
 			},
 			{ new: true }

@@ -72,10 +72,10 @@ class AuthController {
     async onboard(req, res, next) {
         try {
             const user = req.user;
-            const { fullName, bio, gender, nativeLanguage, learningLanguages, location } = req.body;
+            const { fullName, bio, gender, nativeLanguage, learningLanguage, location } = req.body;
 
             const updatedUser = await authService.onboard(user._id, {
-                fullName, bio, gender, nativeLanguage, learningLanguages, location
+                fullName, bio, gender, nativeLanguage, learningLanguage, location
             })
             res.status(200).json(new ApiResponse(200, "User onboarded successfully", { user: updatedUser }));
         } catch (error) {
