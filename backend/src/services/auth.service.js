@@ -76,6 +76,7 @@ class AuthService {
 		}
 		const updatedUser = await User.findByIdAndUpdate(userId, {
 			fullName: onboardData.fullName,
+			avatarUrl: onboardData.avatarUrl || user.avatarUrl,
 			bio: onboardData.bio || "",
 			gender: onboardData.gender,
 			nativeLanguage: onboardData.nativeLanguage || "",
