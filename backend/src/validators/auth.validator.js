@@ -2,15 +2,15 @@ import { z } from "zod";
 import ApiError from "../utils/ApiError.js";
 
 const signupSchema = z.object({
-	fullName: z.string().min(1, "Full name is required"),
-	email: z.string().email("Invalid email"),
-	password: z.string().min(6, "Password must be at least 6 characters"),
+	fullName: z.string("Full name is required").min(1, "Full name cannot be empty"),
+	email: z.string("Email is required").email("Invalid email"),
+	password: z.string("Password is required").min(6, "Password must be at least 6 characters"),
 	gender: z.enum(["male", "female", "other"], "Gender must be male, female, or other"),
 });
 
 const loginSchema = z.object({
-	email: z.string().email("Invalid email"),
-	password: z.string().min(1, "Password is required"),
+	email: z.string("Email is required").email("Invalid email"),
+	password: z.string("Password is required").min(1, "Password is required"),
 });
 
 const onboardSchema = z.object({
@@ -31,7 +31,7 @@ const onboardSchema = z.object({
 });
 
 const updateUserSchema = z.object({
-	fullName: z.string().min(1, "Full name cannot be empty").optional(),
+	fullName: z.string("Full name is required").min(1, "Full name cannot be empty"),
 	bio: z.string().max(200, "Bio must be at most 200 characters").optional(),
 	gender: z.enum(["male", "female", "other"], "Gender must be male, female, or other").optional(),
 	nativeLanguage: z.string().min(1, "Native language cannot be empty").optional(),
@@ -59,7 +59,10 @@ const validate = (schema) => (req, res, next) => {
 			message: issue.message,
 		}));
 
-		return next(new ApiError(400, "Validation failed", errors));
+		// Give only the first error message in the main message
+		const message = errors.length > 0 ? errors[0].message : "Invalid request data";
+
+		return next(new ApiError(400, message));
 	}
 
 	req.body = result.data;
