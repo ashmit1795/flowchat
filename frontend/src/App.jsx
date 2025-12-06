@@ -14,18 +14,21 @@ import useAuthUser from "./hooks/useAuthUser";
 const App = () => {
 	const { isLoading, authenticatedUser } = useAuthUser();
 
+	const isAuthenticated = Boolean(authenticatedUser);
+	const isOnboarded = Boolean(authenticatedUser?.isOnboarded);
+
 	return isLoading ? (
 		<Loading data-theme="forest" />
 	) : (
-		<div className="h-screen" data-theme="forest">
+		<div className="h-screen" data-theme="night">
 			<Routes>
-				<Route path="/" element={authenticatedUser ? <Home /> : <Navigate to="/login" />} />
-				<Route path="/login" element={!authenticatedUser ? <Login /> : <Navigate to="/" />} />
-				<Route path="/signup" element={!authenticatedUser ? <SignUp /> : <Navigate to="/" />} />
-				<Route path="/onboarding" element={authenticatedUser ? <Onboarding /> : <Navigate to="/login" />} />
-				<Route path="/notifications" element={authenticatedUser ? <Notifications /> : <Navigate to="/login" />} />
-				<Route path="/call" element={authenticatedUser ? <Call /> : <Navigate to="/login" />} />
-				<Route path="/chat" element={authenticatedUser ? <Chat /> : <Navigate to="/login" />} />
+				<Route path="/" element={isAuthenticated && isOnboarded ? (<Home />) : (<Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />)} />
+				<Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/" />} />
+				<Route path="/signup" element={!isAuthenticated ? <SignUp /> : <Navigate to="/" />} />
+				<Route path="/onboarding" element={isAuthenticated && !isOnboarded ? <Onboarding /> : <Navigate to="/" />} />
+				<Route path="/notifications" element={isAuthenticated ? <Notifications /> : <Navigate to="/login" />} />
+				<Route path="/call" element={isAuthenticated ? <Call /> : <Navigate to="/login" />} />
+				<Route path="/chat" element={isAuthenticated ? <Chat /> : <Navigate to="/login" />} />
 			</Routes>
 
 			<Toaster />
