@@ -8,25 +8,16 @@ import Home from "./pages/Home";
 import Call from "./pages/Call";
 import Chat from "./pages/Chat";
 import { Toaster } from "react-hot-toast";
-import { useQuery } from "@tanstack/react-query";
-import { axiosInstance } from "./config/axios";
+import { Loading } from "./components";
+import useAuthUser from "./hooks/useAuthUser";
 
 const App = () => {
-	const {
-		data: authenticatedUserData,
-	} = useQuery({
-		queryKey: ["authUser"],
-		queryFn: async () => {
-			const response = await axiosInstance.get("/auth/me");
-			return response.data;
-		},
-		retry: false, // Disable automatic retries
-	});
+	const { isLoading, authenticatedUser } = useAuthUser();
 
-	const authenticatedUser = authenticatedUserData?.data.user || null;
-
-	return (
-		<div className="h-screen" data-theme="night">
+	return isLoading ? (
+		<Loading data-theme="forest" />
+	) : (
+		<div className="h-screen" data-theme="forest">
 			<Routes>
 				<Route path="/" element={authenticatedUser ? <Home /> : <Navigate to="/login" />} />
 				<Route path="/login" element={!authenticatedUser ? <Login /> : <Navigate to="/" />} />
