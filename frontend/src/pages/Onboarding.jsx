@@ -21,7 +21,7 @@ const Onboarding = () => {
 	});
 
 	const { mutate: onboardingMutation, isPending } = useMutation({
-		mutationFn: () => completeOnboarding(formState),
+		mutationFn: () => completeOnboarding,
 		onSuccess: () => {
 			toast.success("Onboarding completed successfully!");
 			queryClient.invalidateQueries({ queryKey: ["authUser"] });
@@ -33,7 +33,7 @@ const Onboarding = () => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		onboardingMutation();
+		onboardingMutation(formState);
 	}
 
 	const handleRandomAvatar = () => {
