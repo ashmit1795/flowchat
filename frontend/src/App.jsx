@@ -8,7 +8,7 @@ import Home from "./pages/Home";
 import Call from "./pages/Call";
 import Chat from "./pages/Chat";
 import { Toaster } from "react-hot-toast";
-import { Loading } from "./components";
+import { Layout, Loading } from "./components";
 import useAuthUser from "./hooks/useAuthUser";
 
 const App = () => {
@@ -20,9 +20,20 @@ const App = () => {
 	return isLoading ? (
 		<Loading data-theme="forest" />
 	) : (
-		<div className="h-screen" data-theme="night">
+		<div className="h-screen" data-theme="forest">
 			<Routes>
-				<Route path="/" element={isAuthenticated && isOnboarded ? (<Home />) : (<Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />)} />
+				<Route
+					path="/"
+					element={
+						isAuthenticated && isOnboarded ? (
+							<Layout showSidebar>
+								<Home />
+							</Layout>
+						) : (
+							<Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+						)
+					}
+				/>
 				<Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to={isOnboarded ? "/" : "/onboarding"} />} />
 				<Route path="/signup" element={!isAuthenticated ? <SignUp /> : <Navigate to={isOnboarded ? "/" : "/onboarding"} />} />
 				<Route path="/onboarding" element={isAuthenticated && !isOnboarded ? <Onboarding /> : <Navigate to="/" />} />
