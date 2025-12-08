@@ -10,17 +10,19 @@ import Chat from "./pages/Chat";
 import { Toaster } from "react-hot-toast";
 import { Layout, Loading } from "./components";
 import useAuthUser from "./hooks/useAuthUser";
+import useThemeStore from "./store/useThemeStore";
 
 const App = () => {
 	const { isLoading, authenticatedUser } = useAuthUser();
+	const { theme } = useThemeStore();
 
 	const isAuthenticated = Boolean(authenticatedUser);
 	const isOnboarded = Boolean(authenticatedUser?.isOnboarded);
 
 	return isLoading ? (
-		<Loading data-theme="forest" />
+		<Loading data-theme={theme} />
 	) : (
-		<div className="h-screen" data-theme="forest">
+		<div className="h-screen" data-theme={theme}>
 			<Routes>
 				<Route
 					path="/"
