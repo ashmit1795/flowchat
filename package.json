@@ -21,8 +21,5 @@
   "bugs": {
     "url": "https://github.com/ashmit1795/flowchat/issues"
   },
-  "homepage": "https://github.com/ashmit1795/flowchat#readme",
-  "dependencies": {
-    "zod": "^4.1.13"
-  }
+  "homepage": "https://github.com/ashmit1795/flowchat#readme"
 }
