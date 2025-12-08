@@ -9,6 +9,7 @@ import { CLIENT_URL, NODE_ENV } from "./config/env.js";
 import { fileURLToPath } from "url";
 import userRouter from "./routes/user.routes.js";
 import cors from "cors";
+import { chatRouter } from "./routes/chat.routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -32,6 +33,7 @@ app.get("/api", (req, res) => {
 // API routes
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
+app.use("/api/chat", chatRouter);
 
 // Serve static files only if build exists (production)
 if (NODE_ENV === "production") {
